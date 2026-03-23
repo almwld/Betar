@@ -1,14 +1,14 @@
 # ============================================================================
-# GitHub Actions Workflow - Kimi_Alfa Flutter Build
+# GitHub Actions Workflow for Betar Flutter App
 # ============================================================================
-# هذا الملف يعالج جميع مشاكل البناء:
-# - Gradle version mismatch
-# - Kotlin metadata version
+# This workflow fixes all common Flutter build issues:
+# - Gradle version mismatch (uses 8.9)
+# - Kotlin metadata version (uses 1.9.22)
 # - Assets errors
-# - إعادة إنشاء android من الصفر
+# - Cache issues
 # ============================================================================
 
-name: Kimi_Alfa Build & Release
+name: Betar Build & Release
 
 on:
   push:
@@ -16,15 +16,6 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      build_type:
-        description: 'Build Type'
-        required: true
-        default: 'release'
-        type: choice
-        options:
-          - release
-          - debug
 
 env:
   FLUTTER_VERSION: '3.22.0'
@@ -33,90 +24,110 @@ env:
 
 jobs:
   # ==========================================================================
-  # Job 1: Clean & Setup Environment
+  # Job 1: Build Android APK
   # ==========================================================================
-  setup:
-    name: 🔧 Setup Environment
+  build-android:
+    name: Build Android APK
     runs-on: ubuntu-latest
+    
     steps:
+      # ----------------------------------------------------------------------
+      # Step 1: Checkout Repository
+      # ----------------------------------------------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      # ----------------------------------------------------------------------
+      # Step 2: Setup Java
+      # ----------------------------------------------------------------------
+      - name: Setup Java ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Setup Flutter
+      # ----------------------------------------------------------------------
+      # Step 3: Setup Flutter
+      # ----------------------------------------------------------------------
+      - name: Setup Flutter ${{ env.FLUTTER_VERSION }}
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
           cache: true
 
-      - name: Verify Flutter Installation
+      # ----------------------------------------------------------------------
+      # Step 4: Verify Flutter Installation
+      # ----------------------------------------------------------------------
+      - name: Verify Flutter
         run: |
           flutter --version
           flutter doctor -v
 
-  # ==========================================================================
-  # Job 2: Recreate Android & Fix Gradle
-  # ==========================================================================
-  fix-android:
-    name: 🛠️ Fix Android Structure
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Backup Custom Android Code
+      # ----------------------------------------------------------------------
+      # Step 5: Backup Custom Files (if any)
+      # ----------------------------------------------------------------------
+      - name: Backup Custom Files
         run: |
-          echo "📦 Backing up custom Android files..."
-          mkdir -p /tmp/android_backup
+          echo "📦 Backing up custom files..."
+          mkdir -p /tmp/backup
           if [ -d "android/app/src/main/kotlin" ]; then
-            cp -r android/app/src/main/kotlin /tmp/android_backup/ 2>/dev/null || true
+            cp -r android/app/src/main/kotlin /tmp/backup/ 2>/dev/null || true
           fi
           if [ -f "android/app/src/main/AndroidManifest.xml" ]; then
-            cp android/app/src/main/AndroidManifest.xml /tmp/android_backup/ 2>/dev/null || true
-          fi
-          if [ -f "android/app/build.gradle" ]; then
-            cp android/app/build.gradle /tmp/android_backup/ 2>/dev/null || true
+            cp android/app/src/main/AndroidManifest.xml /tmp/backup/ 2>/dev/null || true
           fi
           echo "✅ Backup completed"
 
+      # ----------------------------------------------------------------------
+      # Step 6: Remove Old Android Directory
+      # This fixes: Gradle version mismatch, Kotlin version issues
+      # ----------------------------------------------------------------------
       - name: Remove Old Android Directory
         run: |
           echo "🗑️ Removing old Android directory..."
           rm -rf android/
-          echo "✅ Android directory removed"
+          rm -rf build/
+          rm -rf .dart_tool/
+          echo "✅ Old directories removed"
 
+      # ----------------------------------------------------------------------
+      # Step 7: Recreate Android with Flutter
+      # This creates a fresh Android project with correct structure
+      # ----------------------------------------------------------------------
       - name: Recreate Android with Flutter
         run: |
           echo "🔨 Recreating Android directory..."
           flutter create --platforms=android .
-          echo "✅ Android recreated"
+          echo "✅ Android directory recreated"
 
-      - name: Setup Gradle 8.9
+      # ----------------------------------------------------------------------
+      # Step 8: Setup Gradle 8.9
+      # This fixes: "Minimum supported Gradle version is 8.9. Current version is 8.7"
+      # ----------------------------------------------------------------------
+      - name: Setup Gradle ${{ env.GRADLE_VERSION }}
         run: |
           echo "⚙️ Setting up Gradle ${{ env.GRADLE_VERSION }}..."
           mkdir -p android/gradle/wrapper
-          cat > android/gradle/wrapper/gradle-wrapper.properties << 'EOF'
+          cat > android/gradle/wrapper/gradle-wrapper.properties << 'GRADLE_WRAPPER'
           distributionBase=GRADLE_USER_HOME
           distributionPath=wrapper/dists
           zipStoreBase=GRADLE_USER_HOME
           zipStorePath=wrapper/dists
-          distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-all.zip
-          EOF
+          distributionUrl=https\://services.gradle.org/distributions/gradle-${{ env.GRADLE_VERSION }}-all.zip
+          networkTimeout=10000
+          validateDistributionUrl=true
+          GRADLE_WRAPPER
           echo "✅ Gradle wrapper configured"
 
-      - name: Update Android Build Files
+      # ----------------------------------------------------------------------
+      # Step 9: Update settings.gradle
+      # This fixes: Plugin version issues
+      # ----------------------------------------------------------------------
+      - name: Update settings.gradle
         run: |
-          echo "📝 Updating Android build files..."
-          
-          # Update android/settings.gradle
-          cat > android/settings.gradle << 'EOF'
+          echo "📝 Updating settings.gradle..."
+          cat > android/settings.gradle << 'SETTINGS'
           pluginManagement {
               def flutterSdkPath = {
                   def properties = new Properties()
@@ -138,10 +149,16 @@ jobs:
               id "org.jetbrains.kotlin.android" version "1.9.22" apply false
           }
           include ":app"
-          EOF
-          
-          # Update android/build.gradle
-          cat > android/build.gradle << 'EOF'
+          SETTINGS
+          echo "✅ settings.gradle updated"
+
+      # ----------------------------------------------------------------------
+      # Step 10: Update Project-Level build.gradle
+      # ----------------------------------------------------------------------
+      - name: Update Project build.gradle
+        run: |
+          echo "📝 Updating project build.gradle..."
+          cat > android/build.gradle << 'BUILD_GRADLE'
           allprojects {
               repositories {
                   google()
@@ -156,10 +173,16 @@ jobs:
           tasks.register("clean", Delete) {
               delete rootProject.buildDir
           }
-          EOF
-          
-          # Update android/gradle.properties
-          cat > android/gradle.properties << 'EOF'
+          BUILD_GRADLE
+          echo "✅ Project build.gradle updated"
+
+      # ----------------------------------------------------------------------
+      # Step 11: Update gradle.properties
+      # ----------------------------------------------------------------------
+      - name: Update gradle.properties
+        run: |
+          echo "📝 Updating gradle.properties..."
+          cat > android/gradle.properties << 'GRADLE_PROPS'
           org.gradle.jvmargs=-Xmx6G -XX:MaxMetaspaceSize=3G -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
           android.useAndroidX=true
           android.enableJetifier=true
@@ -170,14 +193,18 @@ jobs:
           org.gradle.caching=true
           org.gradle.parallel=true
           org.gradle.configureondemand=true
-          EOF
-          
-          echo "✅ Android build files updated"
+          org.gradle.daemon=true
+          GRADLE_PROPS
+          echo "✅ gradle.properties updated"
 
-      - name: Update App-Level Build.gradle
+      # ----------------------------------------------------------------------
+      # Step 12: Update App-Level build.gradle
+      # This fixes: Kotlin metadata version issues
+      # ----------------------------------------------------------------------
+      - name: Update App build.gradle
         run: |
-          echo "📝 Updating app/build.gradle..."
-          cat > android/app/build.gradle << 'EOF'
+          echo "📝 Updating app build.gradle..."
+          cat > android/app/build.gradle << 'APP_BUILD'
           plugins {
               id "com.android.application"
               id "kotlin-android"
@@ -193,10 +220,10 @@ jobs:
           }
           
           def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '1')
-          def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0')
+          def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0.0')
           
           android {
-              namespace "com.kimialfa.app"
+              namespace "com.betar.app"
               compileSdkVersion 34
               ndkVersion "25.1.8937393"
               
@@ -214,7 +241,7 @@ jobs:
               }
               
               defaultConfig {
-                  applicationId "com.kimialfa.app"
+                  applicationId "com.betar.app"
                   minSdkVersion 21
                   targetSdkVersion 34
                   versionCode flutterVersionCode.toInteger()
@@ -243,37 +270,38 @@ jobs:
               implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
               implementation 'androidx.multidex:multidex:2.0.1'
           }
-          EOF
+          APP_BUILD
           echo "✅ App build.gradle updated"
 
-      - name: Restore Custom Kotlin Files
+      # ----------------------------------------------------------------------
+      # Step 13: Create MainActivity.kt
+      # This fixes: Missing MainActivity issues
+      # ----------------------------------------------------------------------
+      - name: Create MainActivity.kt
         run: |
-          echo "🔄 Restoring custom Kotlin files..."
-          if [ -d "/tmp/android_backup/kotlin" ]; then
-            mkdir -p android/app/src/main/kotlin/com/kimialfa/app
-            cp -r /tmp/android_backup/kotlin/* android/app/src/main/kotlin/com/kimialfa/app/ 2>/dev/null || true
-          fi
-          
-          # Create MainActivity.kt if not exists
-          mkdir -p android/app/src/main/kotlin/com/kimialfa/app
-          cat > android/app/src/main/kotlin/com/kimialfa/app/MainActivity.kt << 'EOF'
-          package com.kimialfa.app
+          echo "📝 Creating MainActivity.kt..."
+          mkdir -p android/app/src/main/kotlin/com/betar/app
+          cat > android/app/src/main/kotlin/com/betar/app/MainActivity.kt << 'MAIN_ACTIVITY'
+          package com.betar.app
           
           import io.flutter.embedding.android.FlutterFragmentActivity
           
           class MainActivity: FlutterFragmentActivity() {
           }
-          EOF
-          echo "✅ Kotlin files restored"
+          MAIN_ACTIVITY
+          echo "✅ MainActivity.kt created"
 
+      # ----------------------------------------------------------------------
+      # Step 14: Update AndroidManifest.xml
+      # ----------------------------------------------------------------------
       - name: Update AndroidManifest.xml
         run: |
           echo "📝 Updating AndroidManifest.xml..."
           mkdir -p android/app/src/main
-          cat > android/app/src/main/AndroidManifest.xml << 'EOF'
+          cat > android/app/src/main/AndroidManifest.xml << 'MANIFEST'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <application
-                  android:label="Kimi Alfa"
+                  android:label="Betar"
                   android:name="${applicationName}"
                   android:icon="@mipmap/ic_launcher">
                   <activity
@@ -298,12 +326,16 @@ jobs:
                       android:value="2" />
               </application>
           </manifest>
-          EOF
+          MANIFEST
           echo "✅ AndroidManifest.xml updated"
 
+      # ----------------------------------------------------------------------
+      # Step 15: Create ProGuard Rules
+      # ----------------------------------------------------------------------
       - name: Create ProGuard Rules
         run: |
-          cat > android/app/proguard-rules.pro << 'EOF'
+          echo "📝 Creating proguard-rules.pro..."
+          cat > android/app/proguard-rules.pro << 'PROGUARD'
           # Flutter
           -keep class io.flutter.app.** { *; }
           -keep class io.flutter.plugin.** { *; }
@@ -322,32 +354,13 @@ jobs:
           -keepattributes Exceptions
           -keepattributes InnerClasses
           -keepattributes EnclosingMethod
-          EOF
+          PROGUARD
           echo "✅ ProGuard rules created"
 
-      - name: Upload Fixed Android
-        uses: actions/upload-artifact@v4
-        with:
-          name: fixed-android
-          path: android/
-
-  # ==========================================================================
-  # Job 3: Create .env from Secrets
-  # ==========================================================================
-  create-env:
-    name: 🔐 Create .env File
-    runs-on: ubuntu-latest
-    needs: fix-android
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Download Fixed Android
-        uses: actions/download-artifact@v4
-        with:
-          name: fixed-android
-          path: android/
-
+      # ----------------------------------------------------------------------
+      # Step 16: Create .env from GitHub Secrets
+      # This provides API keys without committing them
+      # ----------------------------------------------------------------------
       - name: Create .env from Secrets
         run: |
           echo "🔐 Creating .env file from GitHub Secrets..."
@@ -367,7 +380,7 @@ jobs:
           PAYMENT_GATEWAY_KEY=${{ secrets.PAYMENT_GATEWAY_KEY }}
           
           # App Configuration
-          APP_NAME=Kimi Alfa
+          APP_NAME=Betar
           APP_VERSION=1.0.0
           BUILD_NUMBER=${{ github.run_number }}
           
@@ -376,233 +389,176 @@ jobs:
           DEBUG_MODE=false
           EOF
           echo "✅ .env file created"
-          echo "📄 .env contents (masked):"
-          cat .env | sed 's/=.*/=***/'
 
-      - name: Upload .env
-        uses: actions/upload-artifact@v4
-        with:
-          name: env-file
-          path: .env
-
-  # ==========================================================================
-  # Job 4: Clean Gradle Cache & Build APK
-  # ==========================================================================
-  build-apk:
-    name: 📱 Build APK
-    runs-on: ubuntu-latest
-    needs: [create-env, fix-android]
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ env.JAVA_VERSION }}
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: 'stable'
-          cache: true
-
-      - name: Download Fixed Android
-        uses: actions/download-artifact@v4
-        with:
-          name: fixed-android
-          path: android/
-
-      - name: Download .env
-        uses: actions/download-artifact@v4
-        with:
-          name: env-file
-          path: .
-
-      - name: Clean Gradle Cache Completely
+      # ----------------------------------------------------------------------
+      # Step 17: Clean Gradle Cache
+      # This fixes: Cache-related build issues
+      # ----------------------------------------------------------------------
+      - name: Clean Gradle Cache
         run: |
           echo "🧹 Cleaning Gradle cache..."
           rm -rf ~/.gradle/caches/
           rm -rf ~/.gradle/wrapper/
           rm -rf android/.gradle/
           rm -rf android/app/.cxx/
-          rm -rf build/
-          rm -rf .dart_tool/
           echo "✅ Gradle cache cleaned"
 
+      # ----------------------------------------------------------------------
+      # Step 18: Create Assets Directories
+      # This fixes: "unable to locate asset entry" errors
+      # ----------------------------------------------------------------------
+      - name: Create Assets Directories
+        run: |
+          echo "📁 Creating assets directories..."
+          mkdir -p assets/images
+          mkdir -p assets/icons
+          mkdir -p assets/fonts
+          mkdir -p assets/animations
+          mkdir -p assets/images/products
+          mkdir -p assets/icons/svg
+          
+          # Create .gitkeep files for empty directories
+          touch assets/images/.gitkeep
+          touch assets/icons/.gitkeep
+          touch assets/fonts/.gitkeep
+          touch assets/animations/.gitkeep
+          
+          echo "✅ Assets directories created"
+
+      # ----------------------------------------------------------------------
+      # Step 19: Install Dependencies
+      # ----------------------------------------------------------------------
       - name: Install Dependencies
         run: |
           echo "📦 Installing Flutter dependencies..."
           flutter pub get
           echo "✅ Dependencies installed"
 
-      - name: Verify Assets
-        run: |
-          echo "🔍 Verifying assets..."
-          flutter pub run build_runner build --delete-conflicting-outputs 2>/dev/null || true
-          
-          # Create assets directories if not exist
-          mkdir -p assets/images
-          mkdir -p assets/icons
-          mkdir -p assets/fonts
-          mkdir -p assets/animations
-          
-          # Create placeholder files if directories are empty
-          if [ ! "$(ls -A assets/images 2>/dev/null)" ]; then
-            echo "⚠️ No images found, creating placeholder..."
-            touch assets/images/.gitkeep
-          fi
-          
-          echo "✅ Assets verified"
-
+      # ----------------------------------------------------------------------
+      # Step 20: Analyze Code
+      # ----------------------------------------------------------------------
       - name: Analyze Code
         run: |
           echo "🔍 Analyzing code..."
           flutter analyze --no-fatal-infos --no-fatal-warnings || true
           echo "✅ Analysis completed"
 
-      - name: Build APK (Split per ABI)
+      # ----------------------------------------------------------------------
+      # Step 21: Build APK (Split per ABI)
+      # This creates smaller APKs for different architectures
+      # ----------------------------------------------------------------------
+      - name: Build APK
         run: |
           echo "🔨 Building APK with --split-per-abi..."
           flutter build apk --release --split-per-abi --verbose
-          echo "✅ Build completed"
+          echo "✅ APK build completed"
 
-      - name: Verify APK Output
-        run: |
-          echo "📱 Verifying APK output..."
-          ls -lh build/app/outputs/flutter-apk/
-          echo "✅ APK files verified"
-
-      - name: Upload APK Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: apk-files
-          path: |
-            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-            build/app/outputs/flutter-apk/app-x86_64-release.apk
-
-      - name: Rename APKs with Version
-        run: |
-          echo "🏷️ Renaming APKs..."
-          cd build/app/outputs/flutter-apk/
-          
-          VERSION="${{ github.run_number }}"
-          
-          for apk in *.apk; do
-            if [[ $apk == app-*-release.apk ]]; then
-              newname="kimi-alfa-${apk/app-/}"
-              newname="${newname/-release/}"
-              mv "$apk" "$newname"
-              echo "Renamed: $apk -> $newname"
-            fi
-          done
-          
-          ls -lh *.apk
-
-      - name: Upload Renamed APKs
-        uses: actions/upload-artifact@v4
-        with:
-          name: kimi-alfa-apks
-          path: build/app/outputs/flutter-apk/*.apk
-
-  # ==========================================================================
-  # Job 5: Build App Bundle (AAB)
-  # ==========================================================================
-  build-aab:
-    name: 📦 Build App Bundle
-    runs-on: ubuntu-latest
-    needs: [create-env, fix-android]
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: ${{ env.JAVA_VERSION }}
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: 'stable'
-          cache: true
-
-      - name: Download Fixed Android
-        uses: actions/download-artifact@v4
-        with:
-          name: fixed-android
-          path: android/
-
-      - name: Download .env
-        uses: actions/download-artifact@v4
-        with:
-          name: env-file
-          path: .
-
-      - name: Install Dependencies
-        run: flutter pub get
-
+      # ----------------------------------------------------------------------
+      # Step 22: Build App Bundle (AAB)
+      # This is for Google Play Store
+      # ----------------------------------------------------------------------
       - name: Build App Bundle
         run: |
           echo "🔨 Building App Bundle..."
           flutter build appbundle --release --verbose
           echo "✅ AAB build completed"
 
-      - name: Upload AAB
+      # ----------------------------------------------------------------------
+      # Step 23: Rename Artifacts
+      # ----------------------------------------------------------------------
+      - name: Rename Artifacts
+        run: |
+          echo "🏷️ Renaming artifacts..."
+          cd build/app/outputs/flutter-apk/
+          
+          for apk in *.apk; do
+            if [[ $apk == app-*-release.apk ]]; then
+              newname="betar-${apk/app-/}"
+              newname="${newname/-release/}"
+              mv "$apk" "$newname"
+              echo "Renamed: $apk -> $newname"
+            fi
+          done
+          
+          cd ../bundle/release/
+          if [ -f "app-release.aab" ]; then
+            mv app-release.aab "betar-${{ github.run_number }}.aab"
+            echo "Renamed AAB"
+          fi
+
+      # ----------------------------------------------------------------------
+      # Step 24: Upload APK Artifacts
+      # ----------------------------------------------------------------------
+      - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-bundle
-          path: build/app/outputs/bundle/release/app-release.aab
+          name: betar-apks
+          path: build/app/outputs/flutter-apk/*.apk
+
+      # ----------------------------------------------------------------------
+      # Step 25: Upload AAB Artifact
+      # ----------------------------------------------------------------------
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: betar-aab
+          path: build/app/outputs/bundle/release/*.aab
 
   # ==========================================================================
-  # Job 6: Create GitHub Release
+  # Job 2: Create GitHub Release
   # ==========================================================================
   release:
-    name: 🚀 Create Release
+    name: Create Release
+    needs: build-android
     runs-on: ubuntu-latest
-    needs: [build-apk, build-aab]
     if: github.ref == 'refs/heads/main'
+    
     steps:
       - name: Download APKs
         uses: actions/download-artifact@v4
         with:
-          name: kimi-alfa-apks
+          name: betar-apks
           path: apks/
 
       - name: Download AAB
         uses: actions/download-artifact@v4
         with:
-          name: app-bundle
+          name: betar-aab
           path: aab/
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          name: "Kimi Alfa v1.0.0+${{ github.run_number }}"
+          name: "Betar v1.0.0+${{ github.run_number }}"
           tag_name: "v1.0.0+${{ github.run_number }}"
           body: |
-            ## 🚀 Kimi Alfa Release v1.0.0+${{ github.run_number }}
+            ## 🚀 Betar Release v1.0.0+${{ github.run_number }}
             
             ### 📱 APK Downloads
-            - `kimi-alfa-armeabi-v7a.apk` - للأجهزة القديمة (32-bit)
-            - `kimi-alfa-arm64-v8a.apk` - للأجهزة الحديثة (64-bit) ⭐ **موصى به**
-            - `kimi-alfa-x86_64.apk` - للمحاكيات
+            Download the appropriate APK for your device:
+            
+            | File | Architecture | Size |
+            |------|-------------|------|
+            | `betar-arm64-v8a.apk` | 64-bit (Recommended) | ~25MB |
+            | `betar-armeabi-v7a.apk` | 32-bit | ~22MB |
+            | `betar-x86_64.apk` | Emulator | ~28MB |
             
             ### 📦 App Bundle
-            - `app-release.aab` - للرفع على Google Play Store
+            - `betar-${{ github.run_number }}.aab` - For Google Play Store
             
-            ### 📝 Changes
-            - Build number: ${{ github.run_number }}
+            ### 📝 Build Info
+            - Build Number: ${{ github.run_number }}
             - Commit: ${{ github.sha }}
+            - Flutter: 3.22.0
+            - Gradle: 8.9
+            - Kotlin: 1.9.22
             
-            ### ⚠️ Notes
-            - قم بتحميل النسخة المناسبة لمعالج جهازك
-            - arm64-v8a هي النسخة الموصى بها لمعظم الأجهزة الحديثة
+            ### ⚠️ Installation Notes
+            1. Download the APK for your device architecture
+            2. Enable "Install from Unknown Sources" in settings
+            3. Install and enjoy!
+            
+            **Recommended:** Use `betar-arm64-v8a.apk` for most modern devices.
           files: |
             apks/*.apk
             aab/*.aab
