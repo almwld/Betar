@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/simple_app_bar.dart';
+
+class EntertainmentServicesScreen extends StatelessWidget {
+  const EntertainmentServicesScreen({super.key});
+
+  final List<Map<String, dynamic>> services = const [
+    {'name': 'Netflix', 'icon': Icons.movie},
+    {'name': 'Shahid', 'icon': Icons.tv},
+    {'name': 'Spotify', 'icon': Icons.music_note},
+    {'name': 'YouTube Premium', 'icon': Icons.play_circle},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppTheme.darkBackground : AppTheme.lightBackground,
+      appBar: const SimpleAppBar(title: 'Ø®Ø¯ÙØ§Øª ØªØ±ÙÙÙ'),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.2),
+        itemCount: services.length,
+        itemBuilder: (context, index) {
+          return Card(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(services[index]['icon'], size: 48, color: AppTheme.goldColor),
+                const SizedBox(height: 12),
+                Text(services[index]['name'], style: TextStyle(fontFamily: 'Changa', color: AppTheme.getTextColor(context))),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

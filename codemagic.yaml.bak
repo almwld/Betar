@@ -1,0 +1,14 @@
+workflows:
+  flex-yemen:
+    name: Flex Yemen Build
+    instance_type: mac_mini_m1
+    environment:
+      flutter: stable
+      xcode: latest
+    scripts:
+      - flutter pub get
+      - flutter build apk --release
+      - flutter build ios --release --no-codesign
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+      - build/ios_archive/*.xcarchive

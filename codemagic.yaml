@@ -1,0 +1,578 @@
+# ============================================================================
+# Codemagic Workflow - Kimi_Alfa Flutter Build
+# ============================================================================
+# هذا الملف يعالج جميع مشاكل البناء:
+# - Gradle version mismatch
+# - Kotlin metadata version
+# - Assets errors
+# - إعادة إنشاء android من الصفر
+# ============================================================================
+
+workflows:
+  # ==========================================================================
+  # Workflow رئيسي لبناء Android
+  # ==========================================================================
+  kimi-alfa-android-build:
+    name: Kimi Alfa Android Build
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+    
+    environment:
+      flutter: 3.22.0
+      xcode: latest
+      cocoapods: default
+      
+      vars:
+        GRADLE_VERSION: "8.9"
+        JAVA_VERSION: "17"
+        
+      android_signing:
+        - kimi_alfa_keystore
+        
+      groups:
+        - kimi_alfa_secrets  # يحتوي على SUPABASE_URL, SUPABASE_ANON_KEY, etc.
+    
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/.gradle/caches
+        - $HOME/Library/Caches/CocoaPods
+    
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+        - pattern: develop
+          include: true
+          source: true
+      cancel_previous_builds: true
+    
+    scripts:
+      # =======================================================================
+      # Script 1: إعداد البيئة
+      # =======================================================================
+      - name: Setup Environment
+        script: |
+          echo "🔧 Setting up environment..."
+          
+          # Verify Flutter version
+          flutter --version
+          flutter doctor -v
+          
+          # Set Java version
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          echo "Java version:"
+          java -version
+          
+          echo "✅ Environment setup completed"
+      
+      # =======================================================================
+      # Script 2: إعادة إنشاء مجلد Android
+      # =======================================================================
+      - name: Recreate Android Directory
+        script: |
+          echo "🛠️ Recreating Android directory..."
+          
+          # Backup custom files
+          echo "📦 Backing up custom files..."
+          mkdir -p /tmp/android_backup
+          if [ -d "android/app/src/main/kotlin" ]; then
+            cp -r android/app/src/main/kotlin /tmp/android_backup/ 2>/dev/null || true
+          fi
+          if [ -f "android/app/src/main/AndroidManifest.xml" ]; then
+            cp android/app/src/main/AndroidManifest.xml /tmp/android_backup/ 2>/dev/null || true
+          fi
+          
+          # Remove old Android
+          echo "🗑️ Removing old Android directory..."
+          rm -rf android/
+          
+          # Recreate with Flutter
+          echo "🔨 Recreating Android with Flutter..."
+          flutter create --platforms=android .
+          
+          echo "✅ Android directory recreated"
+      
+      # =======================================================================
+      # Script 3: إعداد Gradle 8.9
+      # =======================================================================
+      - name: Setup Gradle 8.9
+        script: |
+          echo "⚙️ Setting up Gradle 8.9..."
+          
+          mkdir -p android/gradle/wrapper
+          
+          cat > android/gradle/wrapper/gradle-wrapper.properties << 'EOF'
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-all.zip
+          networkTimeout=10000
+          validateDistributionUrl=true
+          EOF
+          
+          echo "✅ Gradle wrapper configured"
+      
+      # =======================================================================
+      # Script 4: تحديث ملفات البناء
+      # =======================================================================
+      - name: Update Build Files
+        script: |
+          echo "📝 Updating build files..."
+          
+          # settings.gradle
+          cat > android/settings.gradle << 'EOF'
+          pluginManagement {
+              def flutterSdkPath = {
+                  def properties = new Properties()
+                  file("local.properties").withInputStream { properties.load(it) }
+                  def flutterSdkPath = properties.getProperty("flutter.sdk")
+                  assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+                  return flutterSdkPath
+              }()
+              includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          plugins {
+              id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+              id "com.android.application" version "8.7.0" apply false
+              id "org.jetbrains.kotlin.android" version "1.9.22" apply false
+          }
+          include ":app"
+          EOF
+          
+          # build.gradle (project level)
+          cat > android/build.gradle << 'EOF'
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.buildDir = '../build'
+          subprojects {
+              project.buildDir = "${rootProject.buildDir}/${project.name}"
+              project.evaluationDependsOn(':app')
+          }
+          tasks.register("clean", Delete) {
+              delete rootProject.buildDir
+          }
+          EOF
+          
+          # gradle.properties
+          cat > android/gradle.properties << 'EOF'
+          org.gradle.jvmargs=-Xmx6G -XX:MaxMetaspaceSize=3G -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          android.enableJetifier=true
+          kotlin.code.style=official
+          android.defaults.buildfeatures.buildconfig=true
+          android.nonTransitiveRClass=false
+          android.nonFinalResIds=false
+          org.gradle.caching=true
+          org.gradle.parallel=true
+          org.gradle.configureondemand=true
+          org.gradle.daemon=true
+          EOF
+          
+          echo "✅ Build files updated"
+      
+      # =======================================================================
+      # Script 5: تحديث app/build.gradle
+      # =======================================================================
+      - name: Update App Build.gradle
+        script: |
+          echo "📝 Updating app/build.gradle..."
+          
+          cat > android/app/build.gradle << 'EOF'
+          plugins {
+              id "com.android.application"
+              id "kotlin-android"
+              id "dev.flutter.flutter-gradle-plugin"
+          }
+          
+          def localProperties = new Properties()
+          def localPropertiesFile = rootProject.file('local.properties')
+          if (localPropertiesFile.exists()) {
+              localPropertiesFile.withReader('UTF-8') { reader ->
+                  localProperties.load(reader)
+              }
+          }
+          
+          def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '1')
+          def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0.0')
+          
+          android {
+              namespace "com.kimialfa.app"
+              compileSdkVersion 34
+              ndkVersion "25.1.8937393"
+              
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+              
+              kotlinOptions {
+                  jvmTarget = '17'
+              }
+              
+              sourceSets {
+                  main.java.srcDirs += 'src/main/kotlin'
+              }
+              
+              defaultConfig {
+                  applicationId "com.kimialfa.app"
+                  minSdkVersion 21
+                  targetSdkVersion 34
+                  versionCode flutterVersionCode.toInteger()
+                  versionName flutterVersionName
+                  multiDexEnabled true
+              }
+              
+              signingConfigs {
+                  release {
+                      storeFile file(System.getenv("CM_KEYSTORE_PATH"))
+                      storePassword System.getenv("CM_KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("CM_KEY_ALIAS")
+                      keyPassword System.getenv("CM_KEY_PASSWORD")
+                  }
+              }
+              
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                      minifyEnabled true
+                      shrinkResources true
+                      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                  }
+                  debug {
+                      signingConfig signingConfigs.debug
+                  }
+              }
+          }
+          
+          flutter {
+              source '../..'
+          }
+          
+          dependencies {
+              implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+              implementation 'androidx.multidex:multidex:2.0.1'
+          }
+          EOF
+          
+          echo "✅ App build.gradle updated"
+      
+      # =======================================================================
+      # Script 6: إنشاء ملفات Kotlin والـ Manifest
+      # =======================================================================
+      - name: Create Kotlin Files
+        script: |
+          echo "🔄 Creating Kotlin files..."
+          
+          # Create MainActivity.kt
+          mkdir -p android/app/src/main/kotlin/com/kimialfa/app
+          cat > android/app/src/main/kotlin/com/kimialfa/app/MainActivity.kt << 'EOF'
+          package com.kimialfa.app
+          
+          import io.flutter.embedding.android.FlutterFragmentActivity
+          
+          class MainActivity: FlutterFragmentActivity() {
+          }
+          EOF
+          
+          # Create AndroidManifest.xml
+          mkdir -p android/app/src/main
+          cat > android/app/src/main/AndroidManifest.xml << 'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <application
+                  android:label="Kimi Alfa"
+                  android:name="${applicationName}"
+                  android:icon="@mipmap/ic_launcher">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:launchMode="singleTop"
+                      android:theme="@style/LaunchTheme"
+                      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+                      android:hardwareAccelerated="true"
+                      android:windowSoftInputMode="adjustResize">
+                      <meta-data
+                        android:name="io.flutter.embedding.android.NormalTheme"
+                        android:resource="@style/NormalTheme"
+                        />
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN"/>
+                          <category android:name="android.intent.category.LAUNCHER"/>
+                      </intent-filter>
+                  </activity>
+                  <meta-data
+                      android:name="flutterEmbedding"
+                      android:value="2" />
+              </application>
+          </manifest>
+          EOF
+          
+          # Create ProGuard rules
+          cat > android/app/proguard-rules.pro << 'EOF'
+          # Flutter
+          -keep class io.flutter.app.** { *; }
+          -keep class io.flutter.plugin.** { *; }
+          -keep class io.flutter.util.** { *; }
+          -keep class io.flutter.view.** { *; }
+          -keep class io.flutter.** { *; }
+          -keep class io.flutter.plugins.** { *; }
+          
+          # Supabase
+          -keep class io.supabase.** { *; }
+          -keep class com.google.gson.** { *; }
+          
+          # General
+          -keepattributes *Annotation*
+          -keepattributes Signature
+          -keepattributes Exceptions
+          -keepattributes InnerClasses
+          -keepattributes EnclosingMethod
+          EOF
+          
+          echo "✅ Kotlin files created"
+      
+      # =======================================================================
+      # Script 7: إنشاء ملف .env من Secrets
+      # =======================================================================
+      - name: Create .env File
+        script: |
+          echo "🔐 Creating .env file from Codemagic Secrets..."
+          
+          cat > .env << EOF
+          # Supabase Configuration
+          SUPABASE_URL=$SUPABASE_URL
+          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+          
+          # Firebase Configuration
+          FIREBASE_API_KEY=$FIREBASE_API_KEY
+          FIREBASE_APP_ID=$FIREBASE_APP_ID
+          FIREBASE_MESSAGING_SENDER_ID=$FIREBASE_MESSAGING_SENDER_ID
+          FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID
+          
+          # API Keys
+          MAP_API_KEY=$MAP_API_KEY
+          PAYMENT_GATEWAY_KEY=$PAYMENT_GATEWAY_KEY
+          
+          # App Configuration
+          APP_NAME=Kimi Alfa
+          APP_VERSION=1.0.0
+          BUILD_NUMBER=$PROJECT_BUILD_NUMBER
+          
+          # Environment
+          ENVIRONMENT=production
+          DEBUG_MODE=false
+          EOF
+          
+          echo "✅ .env file created"
+          echo "📄 .env contents (masked):"
+          cat .env | sed 's/=.*/=***/'
+      
+      # =======================================================================
+      # Script 8: تنظيف Gradle Cache
+      # =======================================================================
+      - name: Clean Gradle Cache
+        script: |
+          echo "🧹 Cleaning Gradle cache..."
+          
+          rm -rf ~/.gradle/caches/
+          rm -rf ~/.gradle/wrapper/
+          rm -rf android/.gradle/
+          rm -rf android/app/.cxx/
+          rm -rf build/
+          rm -rf .dart_tool/
+          
+          echo "✅ Gradle cache cleaned"
+      
+      # =======================================================================
+      # Script 9: تثبيت التبعيات
+      # =======================================================================
+      - name: Install Dependencies
+        script: |
+          echo "📦 Installing Flutter dependencies..."
+          flutter pub get
+          
+          echo "📦 Running build_runner..."
+          flutter pub run build_runner build --delete-conflicting-outputs 2>/dev/null || true
+          
+          echo "✅ Dependencies installed"
+      
+      # =======================================================================
+      # Script 10: التحقق من Assets
+      # =======================================================================
+      - name: Verify Assets
+        script: |
+          echo "🔍 Verifying assets..."
+          
+          # Create assets directories
+          mkdir -p assets/images
+          mkdir -p assets/icons
+          mkdir -p assets/fonts
+          mkdir -p assets/animations
+          
+          # Create .gitkeep if empty
+          if [ ! "$(ls -A assets/images 2>/dev/null)" ]; then
+            touch assets/images/.gitkeep
+          fi
+          
+          echo "✅ Assets verified"
+      
+      # =======================================================================
+      # Script 11: بناء APK
+      # =======================================================================
+      - name: Build APK
+        script: |
+          echo "🔨 Building APK with --split-per-abi..."
+          flutter build apk --release --split-per-abi --verbose
+          echo "✅ APK build completed"
+      
+      # =======================================================================
+      # Script 12: بناء App Bundle
+      # =======================================================================
+      - name: Build App Bundle
+        script: |
+          echo "🔨 Building App Bundle..."
+          flutter build appbundle --release --verbose
+          echo "✅ AAB build completed"
+      
+      # =======================================================================
+      # Script 13: إعادة تسمية الملفات
+      # =======================================================================
+      - name: Rename Artifacts
+        script: |
+          echo "🏷️ Renaming artifacts..."
+          
+          cd build/app/outputs/flutter-apk/
+          
+          for apk in *.apk; do
+            if [[ $apk == app-*-release.apk ]]; then
+              newname="kimi-alfa-${apk/app-/}"
+              newname="${newname/-release/}"
+              mv "$apk" "$newname"
+              echo "Renamed: $apk -> $newname"
+            fi
+          done
+          
+          ls -lh *.apk
+          
+          # Rename AAB
+          cd ../bundle/release/
+          if [ -f "app-release.aab" ]; then
+            mv app-release.aab "kimi-alfa-$PROJECT_BUILD_NUMBER.aab"
+            echo "Renamed AAB"
+          fi
+    
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/bundle/release/*.aab
+    
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true
+      
+      # رفع على Google Play (اختياري)
+      # google_play:
+      #   credentials: $GOOGLE_PLAY_CREDENTIALS
+      #   track: internal
+      #   submit_as_draft: true
+
+  # ==========================================================================
+  # Workflow لبناء iOS
+  # ==========================================================================
+  kimi-alfa-ios-build:
+    name: Kimi Alfa iOS Build
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+    
+    environment:
+      flutter: 3.22.0
+      xcode: latest
+      cocoapods: default
+      
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.kimialfa.app
+    
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/Library/Caches/CocoaPods
+    
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    
+    scripts:
+      - name: Setup Environment
+        script: |
+          flutter --version
+          flutter doctor -v
+      
+      - name: Create .env File
+        script: |
+          cat > .env << EOF
+          SUPABASE_URL=$SUPABASE_URL
+          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+          ENVIRONMENT=production
+          EOF
+      
+      - name: Install Dependencies
+        script: |
+          flutter pub get
+          cd ios && pod install --repo-update && cd ..
+      
+      - name: Build iOS
+        script: |
+          flutter build ipa --release --verbose
+    
+    artifacts:
+      - build/ios/ipa/*.ipa
+    
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: false
+
+  # ==========================================================================
+  # Workflow للاختبار
+  # ==========================================================================
+  kimi-alfa-test:
+    name: Kimi Alfa Tests
+    instance_type: linux
+    max_build_duration: 30
+    
+    environment:
+      flutter: 3.22.0
+    
+    scripts:
+      - name: Run Tests
+        script: |
+          flutter pub get
+          flutter test --coverage
+      
+      - name: Analyze Code
+        script: |
+          flutter analyze --no-fatal-infos

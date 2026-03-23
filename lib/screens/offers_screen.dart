@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/custom_app_bar.dart';
+
+class OffersScreen extends StatelessWidget {
+  const OffersScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: isDark ? AppTheme.darkBackground : AppTheme.lightBackground,
+      appBar: const CustomAppBar(title: 'Ø§ÙØ¹Ø±ÙØ¶'),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.75),
+        itemCount: 6,
+        itemBuilder: (context, index) => Card(
+          child: Column(
+            children: [
+              Expanded(child: Container(color: AppTheme.goldColor.withOpacity(0.1), child: const Icon(Icons.local_offer, color: AppTheme.goldColor))),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Text('Ø¹Ø±Ø¶ ${index + 1}', style: TextStyle(fontFamily: 'Changa', color: AppTheme.getTextColor(context))),
+                    const SizedBox(height: 4),
+                    Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: AppTheme.error.withOpacity(0.1), borderRadius: BorderRadius.circular(8)), child: const Text('-20%', style: TextStyle(fontFamily: 'Changa', color: AppTheme.error))),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

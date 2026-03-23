@@ -1,0 +1,185 @@
+import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
+
+/// Ø§ÙØ´Ø±ÙØ· Ø§ÙØ¹ÙÙÙ Ø§ÙÙÙØ­Ø¯
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String? title;
+  final List<Widget>? actions;
+  final bool showLogo;
+  final bool centerTitle;
+  final Widget? leading;
+  final double elevation;
+  final Color? backgroundColor;
+  final PreferredSizeWidget? bottom;
+
+  const CustomAppBar({
+    super.key,
+    this.title,
+    this.actions,
+    this.showLogo = false,
+    this.centerTitle = true,
+    this.leading,
+    this.elevation = 0,
+    this.backgroundColor,
+    this.bottom,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return AppBar(
+      centerTitle: centerTitle,
+      elevation: elevation,
+      backgroundColor: backgroundColor ?? (isDark ? AppTheme.darkSurface : AppTheme.lightSurface),
+      foregroundColor: AppTheme.getTextColor(context),
+      leading: leading,
+      bottom: bottom,
+      title: showLogo
+          ? _buildLogo()
+          : (title != null
+              ? Text(
+                  title!,
+                  style: const TextStyle(
+                    fontFamily: 'Changa',
+                    fontWeight: FontWeight.w600,
+                  ),
+                )
+              : null),
+      actions: actions ?? [
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {
+            Navigator.pushNamed(context, '/search');
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.notifications_outlined),
+          onPressed: () {
+            Navigator.pushNamed(context, '/notifications');
+          },
+        ),
+        const SizedBox(width: 8),
+      ],
+    );
+  }
+
+  Widget _buildLogo() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          'FLEX',
+          style: TextStyle(
+            color: AppTheme.goldColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            fontFamily: 'Changa',
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          'YEMEN',
+          style: TextStyle(
+            color: AppTheme.goldLight,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Changa',
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(
+        kToolbarHeight + (bottom?.preferredSize.height ?? 0),
+      );
+}
+
+/// Ø´Ø±ÙØ· Ø¹ÙÙÙ Ø¨Ø³ÙØ·
+class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final List<Widget>? actions;
+  final Widget? leading;
+
+  const SimpleAppBar({
+    super.key,
+    required this.title,
+    this.actions,
+    this.leading,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: AppTheme.getSurfaceColor(context),
+      foregroundColor: AppTheme.getTextColor(context),
+      leading: leading ?? IconButton(
+        icon: const Icon(Icons.arrow_back_ios),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontFamily: 'Changa',
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      actions: actions,
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+/// Ø´Ø±ÙØ· Ø¹ÙÙÙ Ø´ÙØ§Ù
+class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String? title;
+  final List<Widget>? actions;
+  final Widget? leading;
+
+  const TransparentAppBar({
+    super.key,
+    this.title,
+    this.actions,
+    this.leading,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      foregroundColor: Colors.white,
+      leading: leading ?? IconButton(
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.3),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.arrow_back_ios, size: 18),
+        ),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: title != null
+          ? Text(
+              title!,
+              style: const TextStyle(
+                fontFamily: 'Changa',
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          : null,
+      actions: actions,
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}

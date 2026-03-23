@@ -1,0 +1,194 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'providers/theme_manager.dart';
+import 'services/cache/local_storage_service.dart';
+import 'theme/app_theme.dart';
+import 'screens/splash_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/main_navigation.dart';
+import 'screens/home_screen.dart';
+import 'screens/search_screen.dart';
+import 'screens/notifications_screen.dart';
+import 'screens/all_ads_screen.dart';
+import 'screens/ad_detail_screen.dart';
+import 'screens/add_ad_screen.dart';
+import 'screens/offers_screen.dart';
+import 'screens/auctions_screen.dart';
+import 'screens/wallet/wallet_screen.dart';
+import 'screens/chat_screen.dart';
+import 'screens/chat_detail_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/account_info_screen.dart';
+import 'screens/my_ads_screen.dart';
+import 'screens/favorites_screen.dart';
+import 'screens/my_orders_screen.dart';
+import 'screens/order_detail_screen.dart';
+import 'screens/product_review_screen.dart';
+import 'screens/report_ad_screen.dart';
+import 'screens/live_support_screen.dart';
+import 'screens/faq_screen.dart';
+import 'screens/contact_us_screen.dart';
+import 'screens/categories_screen.dart';
+import 'screens/seller_profile_screen.dart';
+import 'screens/seller/seller_dashboard.dart';
+import 'screens/changelog_screen.dart';
+import 'screens/following_screen.dart';
+import 'screens/settings/settings_screen.dart';
+import 'screens/settings/notifications_settings_screen.dart';
+import 'screens/settings/security_settings_screen.dart';
+import 'screens/settings/language_screen.dart';
+import 'screens/settings/payment_methods_screen.dart';
+import 'screens/settings/about_screen.dart';
+import 'screens/settings/privacy_policy_screen.dart';
+import 'screens/settings/help_support_screen.dart';
+import 'screens/wallet/deposit_screen.dart';
+import 'screens/wallet/withdraw_screen.dart';
+import 'screens/wallet/transfer_screen.dart';
+import 'screens/wallet/payments_screen.dart';
+import 'screens/wallet/transactions_screen.dart';
+import 'screens/wallet/transfer_network_screen.dart';
+import 'screens/wallet/entertainment_services_screen.dart';
+import 'screens/wallet/games_screen.dart';
+import 'screens/wallet/apps_screen.dart';
+import 'screens/wallet/gift_cards_screen.dart';
+import 'screens/wallet/amazon_gift_cards_screen.dart';
+import 'screens/wallet/banks_wallets_screen.dart';
+import 'screens/wallet/money_transfers_screen.dart';
+import 'screens/wallet/government_payments_screen.dart';
+import 'screens/wallet/jib_screen.dart';
+import 'screens/wallet/cash_withdrawal_screen.dart';
+import 'screens/wallet/universities_screen.dart';
+import 'screens/wallet/recharge_payment_screen.dart';
+import 'screens/wallet/recharge_credit_screen.dart';
+import 'screens/wallet/pay_bundles_screen.dart';
+import 'screens/wallet/internet_landline_screen.dart';
+import 'screens/wallet/receive_transfer_request_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // ØªÙÙØ¦Ø© Ø§ÙØªØ®Ø²ÙÙ Ø§ÙÙØ­ÙÙ
+  await LocalStorageService.init();
+
+  // ØªØ­ÙÙÙ ÙØªØºÙØ±Ø§Øª Ø§ÙØ¨ÙØ¦Ø©
+  await dotenv.load(fileName: ".env");
+
+  // ØªÙÙØ¦Ø© Supabase
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
+
+  // Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§ÙÙØ¸Ø§Ù
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ThemeManager(),
+      child: Consumer<ThemeManager>(
+        builder: (context, themeManager, child) {
+          return MaterialApp(
+            title: 'Flex Yemen',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeManager.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            locale: const Locale('ar', 'YE'),
+            builder: (context, child) {
+              return Directionality(
+                textDirection: TextDirection.rtl,
+                child: child!,
+              );
+            },
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const SplashScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/register': (context) => const RegisterScreen(),
+              '/main': (context) => const MainNavigation(),
+              '/home': (context) => const HomeScreen(),
+              '/search': (context) => const SearchScreen(),
+              '/notifications': (context) => const NotificationsScreen(),
+              '/all_ads': (context) => const AllAdsScreen(),
+              '/ad_detail': (context) => const AdDetailScreen(),
+              '/add_ad': (context) => const AddAdScreen(),
+              '/offers': (context) => const OffersScreen(),
+              '/auctions': (context) => const AuctionsScreen(),
+              '/wallet': (context) => const WalletScreen(),
+              '/chat': (context) => const ChatScreen(),
+              '/chat_detail': (context) => const ChatDetailScreen(),
+              '/profile': (context) => const ProfileScreen(),
+              '/account_info': (context) => const AccountInfoScreen(),
+              '/my_ads': (context) => const MyAdsScreen(),
+              '/favorites': (context) => const FavoritesScreen(),
+              '/my_orders': (context) => const MyOrdersScreen(),
+              '/order_detail': (context) => const OrderDetailScreen(),
+              '/product_review': (context) => const ProductReviewScreen(),
+              '/report_ad': (context) => const ReportAdScreen(),
+              '/live_support': (context) => const LiveSupportScreen(),
+              '/faq': (context) => const FaqScreen(),
+              '/contact_us': (context) => const ContactUsScreen(),
+              '/categories': (context) => const CategoriesScreen(),
+              '/seller_profile': (context) => const SellerProfileScreen(),
+              '/seller_dashboard': (context) => const SellerDashboard(),
+              '/changelog': (context) => const ChangelogScreen(),
+              '/following': (context) => const FollowingScreen(),
+              '/settings': (context) => const SettingsScreen(),
+              '/notifications_settings': (context) => const NotificationsSettingsScreen(),
+              '/security_settings': (context) => const SecuritySettingsScreen(),
+              '/language': (context) => const LanguageScreen(),
+              '/payment_methods': (context) => const PaymentMethodsScreen(),
+              '/about': (context) => const AboutScreen(),
+              '/privacy_policy': (context) => const PrivacyPolicyScreen(),
+              '/help_support': (context) => const HelpSupportScreen(),
+              // ØµÙØ­Ø§Øª Ø§ÙÙØ­ÙØ¸Ø©
+              '/deposit': (context) => const DepositScreen(),
+              '/withdraw': (context) => const WithdrawScreen(),
+              '/transfer': (context) => const TransferScreen(),
+              '/payments': (context) => const PaymentsScreen(),
+              '/transactions': (context) => const TransactionsScreen(),
+              '/transfer_network': (context) => const TransferNetworkScreen(),
+              '/entertainment': (context) => const EntertainmentServicesScreen(),
+              '/games': (context) => const GamesScreen(),
+              '/apps': (context) => const AppsScreen(),
+              '/gift_cards': (context) => const GiftCardsScreen(),
+              '/amazon_gift_cards': (context) => const AmazonGiftCardsScreen(),
+              '/banks_wallets': (context) => const BanksWalletsScreen(),
+              '/money_transfers': (context) => const MoneyTransfersScreen(),
+              '/government_payments': (context) => const GovernmentPaymentsScreen(),
+              '/jib': (context) => const JibScreen(),
+              '/cash_withdrawal': (context) => const CashWithdrawalScreen(),
+              '/universities': (context) => const UniversitiesScreen(),
+              '/recharge_payment': (context) => const RechargePaymentScreen(),
+              '/recharge_credit': (context) => const RechargeCreditScreen(),
+              '/pay_bundles': (context) => const PayBundlesScreen(),
+              '/internet_landline': (context) => const InternetLandlineScreen(),
+              '/receive_transfer': (context) => const ReceiveTransferRequestScreen(),
+            },
+          );
+        },
+      ),
+    );
+  }
+}
