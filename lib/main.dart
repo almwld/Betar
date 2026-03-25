@@ -71,19 +71,15 @@ import 'screens/wallet/receive_transfer_request_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ØªÙÙØ¦Ø© Ø§ÙØªØ®Ø²ÙÙ Ø§ÙÙØ­ÙÙ
   await LocalStorageService.init();
 
-  // ØªØ­ÙÙÙ ÙØªØºÙØ±Ø§Øª Ø§ÙØ¨ÙØ¦Ø©
   await dotenv.load(fileName: ".env");
 
-  // ØªÙÙØ¦Ø© Supabase
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  // Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§ÙÙØ¸Ø§Ù
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -162,7 +158,6 @@ class MyApp extends StatelessWidget {
               '/about': (context) => const AboutScreen(),
               '/privacy_policy': (context) => const PrivacyPolicyScreen(),
               '/help_support': (context) => const HelpSupportScreen(),
-              // ØµÙØ­Ø§Øª Ø§ÙÙØ­ÙØ¸Ø©
               '/deposit': (context) => const DepositScreen(),
               '/withdraw': (context) => const WithdrawScreen(),
               '/transfer': (context) => const TransferScreen(),

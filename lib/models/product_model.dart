@@ -1,4 +1,3 @@
-/// ÙÙÙØ°Ø¬ Ø§ÙÙÙØªØ¬/Ø§ÙØ¥Ø¹ÙØ§Ù
 class ProductModel {
   final String id;
   final String title;
@@ -133,8 +132,8 @@ class ProductModel {
 
   String get formattedPrice {
     final currencySymbol = {
-      'YER': 'Ø±.Ù',
-      'SAR': 'Ø±.Ø³',
+      'YER': 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±.أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹',
+      'SAR': 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±.أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ³',
       'USD': '\$',
     }[currency] ?? currency;
     return '$price $currencySymbol';

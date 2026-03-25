@@ -11,7 +11,6 @@ class ThemeManager extends ChangeNotifier {
   }
   
   void _loadTheme() async {
-    // ÙÙÙÙ ØªØ­ÙÙÙ Ø§ÙØ¥Ø¹Ø¯Ø§Ø¯Ø§Øª ÙÙ Ø§ÙØªØ®Ø²ÙÙ Ø§ÙÙØ­ÙÙ ÙÙØ§
     notifyListeners();
   }
   

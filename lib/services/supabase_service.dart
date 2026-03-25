@@ -7,13 +7,10 @@ import '../models/wallet_model.dart';
 import '../models/rating_model.dart';
 import '../models/message_model.dart';
 
-/// Ø®Ø¯ÙØ© Supabase - Ø§ÙØªØ¹Ø§ÙÙ ÙØ¹ ÙØ§Ø¹Ø¯Ø© Ø§ÙØ¨ÙØ§ÙØ§Øª ÙØ§ÙÙØµØ§Ø¯ÙØ©
 class SupabaseService {
   static final SupabaseClient client = Supabase.instance.client;
 
-  // ==================== Ø§ÙÙØµØ§Ø¯ÙØ© ====================
 
-  /// ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ Ø¨Ø§ÙØ¨Ø±ÙØ¯ ÙÙÙÙØ© Ø§ÙÙØ±ÙØ±
   static Future<AuthResponse> signInWithEmail(String email, String password) async {
     try {
       final response = await client.auth.signInWithPassword(
@@ -27,7 +24,6 @@ class SupabaseService {
     }
   }
 
-  /// ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ Ø¨Ø±ÙÙ Ø§ÙÙØ§ØªÙ
   static Future<AuthResponse> signInWithPhone(String phone, String password) async {
     try {
       final response = await client.auth.signInWithPassword(
@@ -41,7 +37,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø¥ÙØ´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø¬Ø¯ÙØ¯
   static Future<AuthResponse> signUpWithEmail({
     required String email,
     required String password,
@@ -68,7 +63,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø¥Ø¹Ø§Ø¯Ø© ØªØ¹ÙÙÙ ÙÙÙØ© Ø§ÙÙØ±ÙØ±
   static Future<void> resetPassword(String email) async {
     try {
       await client.auth.resetPasswordForEmail(email);
@@ -78,7 +72,6 @@ class SupabaseService {
     }
   }
 
-  /// ØªØ³Ø¬ÙÙ Ø§ÙØ®Ø±ÙØ¬
   static Future<void> signOut() async {
     try {
       await client.auth.signOut();
@@ -88,15 +81,11 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø§ÙÙØ³ØªØ®Ø¯Ù Ø§ÙØ­Ø§ÙÙ
   static User? get currentUser => client.auth.currentUser;
 
-  /// Ø§ÙØªØ­ÙÙ ÙÙ Ø­Ø§ÙØ© ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ
   static bool get isAuthenticated => currentUser != null;
 
-  // ==================== Ø§ÙÙØ³ØªØ®Ø¯ÙÙÙ ====================
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø¨ÙØ§ÙØ§Øª Ø§ÙÙØ³ØªØ®Ø¯Ù
   static Future<UserModel?> getUserProfile(String userId) async {
     try {
       final response = await client
@@ -112,7 +101,6 @@ class SupabaseService {
     }
   }
 
-  /// ØªØ­Ø¯ÙØ« Ø¨ÙØ§ÙØ§Øª Ø§ÙÙØ³ØªØ®Ø¯Ù
   static Future<void> updateUserProfile(String userId, Map<String, dynamic> data) async {
     try {
       await client
@@ -125,7 +113,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø±ÙØ¹ ØµÙØ±Ø© Ø§ÙÙÙÙ Ø§ÙØ´Ø®ØµÙ
   static Future<String?> uploadAvatar(String userId, File file) async {
     try {
       final fileName = 'avatar_$userId${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -133,7 +120,6 @@ class SupabaseService {
       
       final url = client.storage.from('avatars').getPublicUrl(fileName);
       
-      // ØªØ­Ø¯ÙØ« Ø±Ø§Ø¨Ø· Ø§ÙØµÙØ±Ø© ÙÙ Ø§ÙÙÙÙ Ø§ÙØ´Ø®ØµÙ
       await updateUserProfile(userId, {'avatar_url': url});
       
       return url;
@@ -143,9 +129,7 @@ class SupabaseService {
     }
   }
 
-  // ==================== Ø§ÙÙÙØªØ¬Ø§Øª ====================
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ ÙØ§Ø¦ÙØ© Ø§ÙÙÙØªØ¬Ø§Øª
   static Future<List<ProductModel>> getProducts({
     String? category,
     String? city,
@@ -189,7 +173,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ ÙÙØªØ¬ ÙØ§Ø­Ø¯
   static Future<ProductModel?> getProduct(String productId) async {
     try {
       final response = await client
@@ -198,7 +181,6 @@ class SupabaseService {
           .eq('id', productId)
           .single();
 
-      // Ø²ÙØ§Ø¯Ø© Ø¹Ø¯Ø¯ Ø§ÙÙØ´Ø§ÙØ¯Ø§Øª
       await client.rpc('increment_views', params: {'product_id': productId});
 
       return ProductModel.fromJson(response);
@@ -208,7 +190,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø¥Ø¶Ø§ÙØ© ÙÙØªØ¬ Ø¬Ø¯ÙØ¯
   static Future<String?> addProduct(Map<String, dynamic> data) async {
     try {
       final response = await client
@@ -224,7 +205,6 @@ class SupabaseService {
     }
   }
 
-  /// ØªØ­Ø¯ÙØ« ÙÙØªØ¬
   static Future<void> updateProduct(String productId, Map<String, dynamic> data) async {
     try {
       await client
@@ -237,7 +217,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø­Ø°Ù ÙÙØªØ¬
   static Future<void> deleteProduct(String productId) async {
     try {
       await client
@@ -250,7 +229,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø±ÙØ¹ ØµÙØ± Ø§ÙÙÙØªØ¬
   static Future<List<String>> uploadProductImages(String productId, List<File> files) async {
     final List<String> urls = [];
     
@@ -268,7 +246,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ ÙÙØªØ¬Ø§Øª Ø§ÙØ¨Ø§Ø¦Ø¹
   static Future<List<ProductModel>> getSellerProducts(String sellerId) async {
     try {
       final response = await client
@@ -286,9 +263,7 @@ class SupabaseService {
     }
   }
 
-  // ==================== Ø§ÙÙÙØ¶ÙØ© ====================
 
-  /// Ø¥Ø¶Ø§ÙØ© Ø¥ÙÙ Ø§ÙÙÙØ¶ÙØ©
   static Future<void> addToFavorites(String userId, String productId) async {
     try {
       await client.from('favorites').insert({
@@ -301,7 +276,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø¥Ø²Ø§ÙØ© ÙÙ Ø§ÙÙÙØ¶ÙØ©
   static Future<void> removeFromFavorites(String userId, String productId) async {
     try {
       await client
@@ -315,7 +289,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø§ÙÙÙØ¶ÙØ©
   static Future<List<ProductModel>> getFavorites(String userId) async {
     try {
       final response = await client
@@ -332,7 +305,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØªØ­ÙÙ ÙÙ ÙØ¬ÙØ¯ ÙÙ Ø§ÙÙÙØ¶ÙØ©
   static Future<bool> isFavorite(String userId, String productId) async {
     try {
       final response = await client
@@ -349,9 +321,7 @@ class SupabaseService {
     }
   }
 
-  // ==================== Ø§ÙÙØ­ÙØ¸Ø© ====================
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø§ÙÙØ­ÙØ¸Ø©
   static Future<WalletModel?> getWallet(String userId) async {
     try {
       final response = await client
@@ -361,7 +331,6 @@ class SupabaseService {
           .maybeSingle();
 
       if (response == null) {
-        // Ø¥ÙØ´Ø§Ø¡ ÙØ­ÙØ¸Ø© Ø¬Ø¯ÙØ¯Ø©
         final newWallet = await client
             .from('wallets')
             .insert({'user_id': userId})
@@ -377,7 +346,6 @@ class SupabaseService {
     }
   }
 
-  /// ØªØ­Ø¯ÙØ« Ø§ÙØ±ØµÙØ¯
   static Future<void> updateBalance(
     String userId,
     String currency,
@@ -399,7 +367,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø¥ÙØ´Ø§Ø¡ ÙØ¹Ø§ÙÙØ©
   static Future<void> createTransaction(Map<String, dynamic> data) async {
     try {
       await client.from('transactions').insert(data);
@@ -409,7 +376,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø§ÙÙØ¹Ø§ÙÙØ§Øª
   static Future<List<TransactionModel>> getTransactions(String userId, {int limit = 50}) async {
     try {
       final response = await client
@@ -428,9 +394,7 @@ class SupabaseService {
     }
   }
 
-  // ==================== Ø§ÙØ·ÙØ¨Ø§Øª ====================
 
-  /// Ø¥ÙØ´Ø§Ø¡ Ø·ÙØ¨
   static Future<String?> createOrder(Map<String, dynamic> data) async {
     try {
       final response = await client
@@ -446,7 +410,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø·ÙØ¨Ø§Øª Ø§ÙÙØ³ØªØ®Ø¯Ù
   static Future<List<OrderModel>> getUserOrders(String userId) async {
     try {
       final response = await client
@@ -464,7 +427,6 @@ class SupabaseService {
     }
   }
 
-  /// ØªØ­Ø¯ÙØ« Ø­Ø§ÙØ© Ø§ÙØ·ÙØ¨
   static Future<void> updateOrderStatus(String orderId, String status) async {
     try {
       await client
@@ -477,9 +439,7 @@ class SupabaseService {
     }
   }
 
-  // ==================== Ø§ÙÙØ­Ø§Ø¯Ø«Ø§Øª ====================
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø§ÙÙØ­Ø§Ø¯Ø«Ø§Øª
   static Future<List<ChatModel>> getChats(String userId) async {
     try {
       final response = await client
@@ -497,7 +457,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø§ÙØ±Ø³Ø§Ø¦Ù
   static Future<List<MessageModel>> getMessages(String chatId, {int limit = 50}) async {
     try {
       final response = await client
@@ -516,7 +475,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø¥Ø±Ø³Ø§Ù Ø±Ø³Ø§ÙØ©
   static Future<void> sendMessage(Map<String, dynamic> data) async {
     try {
       await client.from('messages').insert(data);
@@ -526,7 +484,6 @@ class SupabaseService {
     }
   }
 
-  /// ÙØ¶Ø¹ Ø¹ÙØ§ÙØ© ÙÙØ±ÙØ¡Ø©
   static Future<void> markAsRead(String chatId, String userId) async {
     try {
       await client
@@ -540,9 +497,7 @@ class SupabaseService {
     }
   }
 
-  // ==================== Ø§ÙØªÙÙÙÙØ§Øª ====================
 
-  /// Ø¥Ø¶Ø§ÙØ© ØªÙÙÙÙ
   static Future<void> addRating(Map<String, dynamic> data) async {
     try {
       await client.from('ratings').insert(data);
@@ -552,7 +507,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ ØªÙÙÙÙØ§Øª Ø§ÙÙÙØªØ¬
   static Future<List<RatingModel>> getProductRatings(String productId) async {
     try {
       final response = await client
@@ -570,9 +524,7 @@ class SupabaseService {
     }
   }
 
-  // ==================== Ø§ÙØ¥Ø´Ø¹Ø§Ø±Ø§Øª ====================
 
-  /// Ø§ÙØ­ØµÙÙ Ø¹ÙÙ Ø§ÙØ¥Ø´Ø¹Ø§Ø±Ø§Øª
   static Future<List<NotificationModel>> getNotifications(String userId) async {
     try {
       final response = await client
@@ -591,7 +543,6 @@ class SupabaseService {
     }
   }
 
-  /// ÙØ¶Ø¹ Ø¹ÙØ§ÙØ© ÙÙØ±ÙØ¡Ø© Ø¹ÙÙ Ø§ÙØ¥Ø´Ø¹Ø§Ø±
   static Future<void> markNotificationAsRead(String notificationId) async {
     try {
       await client
@@ -603,7 +554,6 @@ class SupabaseService {
     }
   }
 
-  /// Ø§ÙØ§Ø´ØªØ±Ø§Ù ÙÙ ØªØºÙÙØ±Ø§Øª Ø§ÙÙØ³ØªØ®Ø¯Ù
   static void subscribeToUserChanges(String userId, Function callback) {
     client
         .channel('public:profiles:id=eq.$userId')
@@ -621,7 +571,6 @@ class SupabaseService {
         .subscribe();
   }
 
-  /// Ø§ÙØ§Ø´ØªØ±Ø§Ù ÙÙ Ø§ÙØ±Ø³Ø§Ø¦Ù Ø§ÙØ¬Ø¯ÙØ¯Ø©
   static void subscribeToMessages(String chatId, Function callback) {
     client
         .channel('public:messages:chat_id=eq.$chatId')

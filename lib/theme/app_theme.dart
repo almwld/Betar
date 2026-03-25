@@ -10,7 +10,6 @@ class AppTheme {
   static const Color info = Color(0xFF2196F3);
   static const Color warning = Color(0xFFFFC107);
   
-  // Light theme colors
   static const Color lightBackground = Color(0xFFF5F5F5);
   static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightCard = Color(0xFFFFFFFF);
@@ -20,7 +19,6 @@ class AppTheme {
   static const Color lightDivider = Color(0xFFE0E0E0);
   static const Color darkText = Color(0xFF212121);
   
-  // Dark theme colors
   static const Color darkBackground = Color(0xFF121212);
   static const Color darkSurface = Color(0xFF1E1E1E);
   static const Color darkCard = Color(0xFF2C2C2C);
@@ -28,14 +26,12 @@ class AppTheme {
   static const Color darkSecondaryText = Color(0xFFB0B0B0);
   static const Color darkDivider = Color(0xFF3C3C3C);
   
-  // Gradients
   static const LinearGradient goldGradient = LinearGradient(
     colors: [Color(0xFFFFD700), Color(0xFFFFB347)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
   
-  // Helper methods
   static Color getTextColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark ? darkTextLight : lightText;
   }
