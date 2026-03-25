@@ -1,2 +1,2 @@
 import 'package:flutter/material.dart';
-class PrivacyPolicyScreen extends StatelessWidget { const PrivacyPolicyScreen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text(''))); }
+class PrivacyPolicyScreen extends StatelessWidget { const PrivacyPolicyScreen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Ø³ÙØ§Ø³Ø© Ø§ÙØ®ØµÙØµÙØ© - ÙÙØ¯ Ø§ÙØ¥Ø¹Ø¯Ø§Ø¯'))); }

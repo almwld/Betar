@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+/// Ø²Ø± ÙØ®ØµØµ ÙÙØ­Ø¯
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -113,6 +114,7 @@ class CustomButton extends StatelessWidget {
   }
 }
 
+/// Ø²Ø± ØµØºÙØ±
 class SmallButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -177,6 +179,7 @@ class SmallButton extends StatelessWidget {
   }
 }
 
+/// Ø²Ø± Ø£ÙÙÙÙØ© Ø¯Ø§Ø¦Ø±Ù
 class IconCircleButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
@@ -215,6 +218,7 @@ class IconCircleButton extends StatelessWidget {
   }
 }
 
+/// Ø²Ø± Ø¹Ø§Ø¦Ù ØµØºÙØ±
 class FloatingActionButtonSmall extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;

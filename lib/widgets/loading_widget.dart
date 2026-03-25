@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../theme/app_theme.dart';
 
+/// ÙÙØ¯Ø¬ Ø§ÙØªØ­ÙÙÙ
 class LoadingWidget extends StatelessWidget {
   final String? message;
 
@@ -35,6 +36,7 @@ class LoadingWidget extends StatelessWidget {
   }
 }
 
+/// ÙÙØ¯Ø¬ Ø§ÙØªØ­ÙÙÙ Ø§ÙÙØ§ÙÙ
 class FullScreenLoading extends StatelessWidget {
   final String? message;
 
@@ -52,6 +54,7 @@ class FullScreenLoading extends StatelessWidget {
   }
 }
 
+/// ÙÙØ¯Ø¬ Ø§ÙØªØ­ÙÙÙ Ø§ÙØ°ÙØ¨Ù Ø§ÙÙØ®ØµØµ
 class GoldLoadingIndicator extends StatelessWidget {
   final double size;
 
@@ -76,6 +79,7 @@ class GoldLoadingIndicator extends StatelessWidget {
   }
 }
 
+/// ØªØ£Ø«ÙØ± Shimmer ÙÙØªØ­ÙÙÙ
 class ShimmerLoading extends StatelessWidget {
   final Widget child;
 
@@ -96,6 +100,7 @@ class ShimmerLoading extends StatelessWidget {
   }
 }
 
+/// Ø¨Ø·Ø§ÙØ© Shimmer
 class ShimmerCard extends StatelessWidget {
   final double height;
   final double? width;
@@ -123,6 +128,7 @@ class ShimmerCard extends StatelessWidget {
   }
 }
 
+/// ÙØ§Ø¦ÙØ© Shimmer
 class ShimmerList extends StatelessWidget {
   final int itemCount;
   final double itemHeight;
@@ -151,6 +157,7 @@ class ShimmerList extends StatelessWidget {
   }
 }
 
+/// Ø´Ø¨ÙØ© Shimmer
 class ShimmerGrid extends StatelessWidget {
   final int itemCount;
   final int crossAxisCount;
@@ -182,6 +189,7 @@ class ShimmerGrid extends StatelessWidget {
   }
 }
 
+/// ÙÙØ¯Ø¬ Ø§ÙØªØ­ÙÙÙ Ø¹ÙØ¯ Ø§ÙØ³Ø­Ø¨ ÙÙØ£Ø³ÙÙ
 class CustomRefreshIndicator extends StatelessWidget {
   final Widget child;
   final Future<void> Function() onRefresh;

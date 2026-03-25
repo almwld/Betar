@@ -1,10 +1,11 @@
+/// ÙÙÙØ°Ø¬ Ø§ÙÙØ³ØªØ®Ø¯Ù
 class UserModel {
   final String id;
   final String fullName;
   final String email;
   final String phone;
   final String? avatarUrl;
-  final String userType; // 'customer' أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ£أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ«أ¢آ€آ  'merchant'
+  final String userType; // 'customer' Ø£Ù 'merchant'
   final String? city;
   final double rating;
   final int followers;

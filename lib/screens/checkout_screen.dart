@@ -45,7 +45,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'shipping_address': _selectedAddress,
       'payment_method': _selectedPaymentMethod,
     });
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(''), backgroundColor: AppTheme.success));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('ØªÙ Ø¥ØªÙØ§Ù Ø§ÙØ·ÙØ¨ Ø¨ÙØ¬Ø§Ø­'), backgroundColor: AppTheme.success));
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => OrderDetailScreen(orderId: orderId)));
   }
 
@@ -53,11 +53,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text(''),
-        content: const Text(''),
+        title: const Text('ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ ÙØ·ÙÙØ¨'),
+        content: const Text('ÙØ±Ø¬Ù ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ ÙØ¥ØªÙØ§Ù Ø¹ÙÙÙØ© Ø§ÙØ´Ø±Ø§Ø¡'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('')),
-          ElevatedButton(onPressed: () { Navigator.pop(context); Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen())); }, child: const Text('')),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Ø¥ÙØºØ§Ø¡')),
+          ElevatedButton(onPressed: () { Navigator.pop(context); Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen())); }, child: const Text('ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ')),
         ],
       ),
     );
@@ -67,18 +67,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      appBar: const CustomAppBar(title: 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¥أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ´أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¦أ¢آ€آ™أکآ·أ‚آ¢أکآ¹أ‚آ©أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ·أ…آ’'),
+      appBar: const CustomAppBar(title: 'Ø¥ØªÙØ§Ù Ø§ÙØ´Ø±Ø§Ø¡'),
       body: Stepper(
         type: StepperType.horizontal,
         currentStep: _currentStep,
         onStepContinue: _currentStep < 2
             ? () {
                 if (_currentStep == 0 && _selectedAddress == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('')));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ø§Ø®ØªØ± Ø¹ÙÙØ§Ù Ø§ÙØªÙØµÙÙ')));
                   return;
                 }
                 if (_currentStep == 1 && _selectedPaymentMethod == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('')));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ø§Ø®ØªØ± Ø·Ø±ÙÙØ© Ø§ÙØ¯ÙØ¹')));
                   return;
                 }
                 setState(() => _currentStep++);
@@ -87,40 +87,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         onStepCancel: _currentStep > 0 ? () => setState(() => _currentStep--) : null,
         steps: [
           Step(
-            title: const Text(''),
+            title: const Text('Ø§ÙØ¹ÙÙØ§Ù'),
             content: Column(
               children: [
                 ListTile(
-                  title: const Text(''),
-                  subtitle: const Text(''),
+                  title: const Text('ØµÙØ¹Ø§Ø¡ - Ø´Ø§Ø±Ø¹ Ø­Ø¯Ø©'),
+                  subtitle: const Text('ÙØ­ÙØ¯ Ø£Ø­ÙØ¯ - 777123456'),
                   trailing: Radio<String>(
-                    value: 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آµأکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¦أ¢آ€آ™أکآ·أ‚آ¢أکآ¹أ‚آ©أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ·أ…آ’ - أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ´أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ­أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ©',
+                    value: 'ØµÙØ¹Ø§Ø¡ - Ø´Ø§Ø±Ø¹ Ø­Ø¯Ø©',
                     groupValue: _selectedAddress,
                     onChanged: (v) => setState(() => _selectedAddress = v),
                   ),
-                  onTap: () => setState(() => _selectedAddress = 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آµأکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¦أ¢آ€آ™أکآ·أ‚آ¢أکآ¹أ‚آ©أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ·أ…آ’ - أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ´أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ­أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ©'),
+                  onTap: () => setState(() => _selectedAddress = 'ØµÙØ¹Ø§Ø¡ - Ø´Ø§Ø±Ø¹ Ø­Ø¯Ø©'),
                 ),
                 ListTile(
-                  title: const Text(''),
-                  subtitle: const Text(''),
+                  title: const Text('Ø¹Ø¯Ù - Ø®ÙØ± ÙÙØ³Ø±'),
+                  subtitle: const Text('ÙØ­ÙØ¯ Ø£Ø­ÙØ¯ - 777123456'),
                   trailing: Radio<String>(
-                    value: 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ  - أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ®أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ«أ¢آ€آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ± أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¦أ¢آ€آ™أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ³أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±',
+                    value: 'Ø¹Ø¯Ù - Ø®ÙØ± ÙÙØ³Ø±',
                     groupValue: _selectedAddress,
                     onChanged: (v) => setState(() => _selectedAddress = v),
                   ),
-                  onTap: () => setState(() => _selectedAddress = 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ  - أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ®أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ«أ¢آ€آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ± أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¦أ¢آ€آ™أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ³أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±'),
+                  onTap: () => setState(() => _selectedAddress = 'Ø¹Ø¯Ù - Ø®ÙØ± ÙÙØ³Ø±'),
                 ),
               ],
             ),
             isActive: _currentStep >= 0,
           ),
           Step(
-            title: const Text(''),
+            title: const Text('Ø§ÙØ¯ÙØ¹'),
             content: Column(
               children: [
                 ListTile(
                   leading: const Icon(Icons.account_balance_wallet, color: AppTheme.goldColor),
-                  title: const Text(''),
+                  title: const Text('Ø§ÙÙØ­ÙØ¸Ø©'),
                   trailing: Radio<String>(
                     value: 'wallet',
                     groupValue: _selectedPaymentMethod,
@@ -130,7 +130,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.credit_card, color: AppTheme.goldColor),
-                  title: const Text(''),
+                  title: const Text('Ø¨Ø·Ø§ÙØ© Ø§Ø¦ØªÙØ§Ù'),
                   trailing: Radio<String>(
                     value: 'card',
                     groupValue: _selectedPaymentMethod,
@@ -143,7 +143,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             isActive: _currentStep >= 1,
           ),
           Step(
-            title: const Text(''),
+            title: const Text('ÙØ±Ø§Ø¬Ø¹Ø©'),
             content: Column(
               children: [
                 ...widget.items.map((i) => Padding(
@@ -153,15 +153,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Container(width: 50, height: 50, color: Colors.grey[300], child: const Icon(Icons.image)),
                       const SizedBox(width: 12),
                       Expanded(child: Text(i.product.title)),
-                      Text(''),
+                      Text('${i.totalPrice.toStringAsFixed(0)} Ø±.Ù'),
                     ],
                   ),
                 )),
                 const Divider(),
-                _buildPriceRow('أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¬أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ«أ¢آ€آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹', _subtotal),
-                _buildPriceRow('أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ´أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ­أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ ', _shipping),
+                _buildPriceRow('Ø§ÙÙØ¬ÙÙØ¹', _subtotal),
+                _buildPriceRow('Ø§ÙØ´Ø­Ù', _shipping),
                 const Divider(),
-                _buildPriceRow('أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¥أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¬أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹', _total, isTotal: true),
+                _buildPriceRow('Ø§ÙØ¥Ø¬ÙØ§ÙÙ', _total, isTotal: true),
               ],
             ),
             isActive: _currentStep >= 2,
@@ -171,7 +171,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       bottomNavigationBar: _currentStep == 2
           ? Container(
               padding: const EdgeInsets.all(16),
-              child: CustomButton(text: 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ£أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¦أ¢آ€آ™أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¾أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹', onPressed: _processPayment, isLoading: _isProcessing),
+              child: CustomButton(text: 'ØªØ£ÙÙØ¯ Ø§ÙØ¯ÙØ¹', onPressed: _processPayment, isLoading: _isProcessing),
             )
           : null,
     );
@@ -184,7 +184,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: isTotal ? const TextStyle(fontWeight: FontWeight.bold) : null),
-          Text('${amount.toStringAsFixed(0)} أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±.أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹', style: isTotal ? const TextStyle(color: AppTheme.goldColor, fontWeight: FontWeight.bold) : null),
+          Text('${amount.toStringAsFixed(0)} Ø±.Ù', style: isTotal ? const TextStyle(color: AppTheme.goldColor, fontWeight: FontWeight.bold) : null),
         ],
       ),
     );

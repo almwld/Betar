@@ -38,6 +38,7 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
       final avg = await SupabaseService.getProductAverageRating(widget.productId);
       final total = await SupabaseService.getProductRatingsCount(widget.productId);
       
+      // Ø­Ø³Ø§Ø¨ ØªÙØ²ÙØ¹ Ø§ÙØªÙÙÙÙØ§Øª
       Map<int, int> distribution = {};
       for (int i = 1; i <= 5; i++) {
         distribution[i] = ratings.where((r) => r.rating == i).length;
@@ -61,7 +62,7 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾ ${widget.productTitle}',
+        title: 'ØªÙÙÙÙØ§Øª ${widget.productTitle}',
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -78,14 +79,14 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
                     children: [
                       Icon(Icons.star_border, size: 80, color: Colors.grey[400]),
                       const SizedBox(height: 16),
-                      const Text('أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ«أ¢آ€آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¬أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¨أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯', style: TextStyle(fontSize: 18)),
+                      const Text('ÙØ§ ØªÙØ¬Ø¯ ØªÙÙÙÙØ§Øª Ø¨Ø¹Ø¯', style: TextStyle(fontSize: 18)),
                       const SizedBox(height: 8),
-                      const Text(''),
+                      const Text('ÙÙ Ø£ÙÙ ÙÙ ÙÙÙÙ ÙØ°Ø§ Ø§ÙÙÙØªØ¬'),
                       const SizedBox(height: 16),
                       ElevatedButton.icon(
                         onPressed: _navigateToAddRating,
                         icon: const Icon(Icons.add),
-                        label: const Text(''),
+                        label: const Text('Ø£Ø¶Ù ØªÙÙÙÙÙ'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.goldColor,
                           foregroundColor: Colors.black,
@@ -98,6 +99,7 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
+                      // ÙÙØ®Øµ Ø§ÙØªÙÙÙÙØ§Øª
                       Card(
                         child: Padding(
                           padding: const EdgeInsets.all(16),
@@ -120,7 +122,7 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
                                     }),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(''),
+                                  Text('$_totalRatings ØªÙÙÙÙ'),
                                 ],
                               ),
                               const SizedBox(width: 16),
@@ -161,6 +163,7 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
                       ),
                       const SizedBox(height: 16),
                       
+                      // ÙØ§Ø¦ÙØ© Ø§ÙØªÙÙÙÙØ§Øª
                       ..._ratings.map((rating) => _buildRatingCard(rating, isDark)),
                     ],
                   ),
@@ -264,12 +267,12 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text(''),
-        content: const Text(''),
+        title: const Text('ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ ÙØ·ÙÙØ¨'),
+        content: const Text('ÙØ±Ø¬Ù ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ ÙØ¥Ø¶Ø§ÙØ© ØªÙÙÙÙ'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(''),
+            child: const Text('Ø¥ÙØºØ§Ø¡'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -279,7 +282,7 @@ class _ProductRatingsScreenState extends State<ProductRatingsScreen> {
                 MaterialPageRoute(builder: (_) => const LoginScreen()),
               );
             },
-            child: const Text(''),
+            child: const Text('ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ'),
           ),
         ],
       ),

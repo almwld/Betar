@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+/// Ø§ÙØ´Ø±ÙØ· Ø§ÙØ¹ÙÙÙ Ø§ÙÙÙØ­Ø¯
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final List<Widget>? actions;
@@ -96,6 +97,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
 }
 
+/// Ø´Ø±ÙØ· Ø¹ÙÙÙ Ø¨Ø³ÙØ·
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
@@ -134,6 +136,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
+/// Ø´Ø±ÙØ· Ø¹ÙÙÙ Ø´ÙØ§Ù
 class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final List<Widget>? actions;

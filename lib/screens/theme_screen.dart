@@ -14,14 +14,14 @@ class ThemeScreen extends StatelessWidget {
     final isDark = themeManager.isDarkMode;
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¸أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أکآŒأکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±'),
+      appBar: const CustomAppBar(title: 'Ø§ÙÙØ¸ÙØ±'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             ListTile(
               leading: const Icon(Icons.light_mode, color: AppTheme.goldColor),
-              title: const Text(''),
+              title: const Text('ÙØ§ØªØ­'),
               trailing: Radio<ThemeMode>(
                 value: ThemeMode.light,
                 groupValue: themeManager.isDarkMode ? ThemeMode.dark : ThemeMode.light,
@@ -31,7 +31,7 @@ class ThemeScreen extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.dark_mode, color: AppTheme.goldColor),
-              title: const Text(''),
+              title: const Text('Ø¯Ø§ÙÙ'),
               trailing: Radio<ThemeMode>(
                 value: ThemeMode.dark,
                 groupValue: themeManager.isDarkMode ? ThemeMode.dark : ThemeMode.light,
@@ -41,10 +41,10 @@ class ThemeScreen extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.brightness_auto, color: AppTheme.goldColor),
-              title: const Text(''),
+              title: const Text('ØªÙÙØ§Ø¦Ù (Ø­Ø³Ø¨ Ø§ÙÙØ¸Ø§Ù)'),
               trailing: Radio<ThemeMode>(
                 value: ThemeMode.system,
-                groupValue: themeManager.isDarkMode ? ThemeMode.dark : ThemeMode.light, // أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¨أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ³أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ·
+                groupValue: themeManager.isDarkMode ? ThemeMode.dark : ThemeMode.light, // ÙØ¨Ø³Ø·
                 onChanged: (v) => themeManager.setDarkMode(MediaQuery.platformBrightnessOf(context) == Brightness.dark),
               ),
               onTap: () {

@@ -76,10 +76,10 @@ class AppTheme {
       backgroundColor: Colors.transparent,
       foregroundColor: lightText,
     ),
-    cardTheme: const CardTheme(
+    cardTheme: CardThemeData(
       elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.circular(16),
       ),
       color: lightCard,
     ),
@@ -127,10 +127,10 @@ class AppTheme {
       backgroundColor: Colors.transparent,
       foregroundColor: darkTextLight,
     ),
-    cardTheme: const CardTheme(
+    cardTheme: CardThemeData(
       elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderRadius: BorderRadius.circular(16),
       ),
       color: darkCard,
     ),

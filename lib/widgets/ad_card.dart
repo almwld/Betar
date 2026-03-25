@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../models/product_model.dart';
 import '../theme/app_theme.dart';
 
+/// Ø¨Ø·Ø§ÙØ© Ø§ÙØ¥Ø¹ÙØ§Ù/Ø§ÙÙÙØªØ¬
 class AdCard extends StatelessWidget {
   final ProductModel product;
   final VoidCallback? onTap;
@@ -38,6 +39,7 @@ class AdCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ØµÙØ±Ø© Ø§ÙÙÙØªØ¬
             Stack(
               children: [
                 ClipRRect(
@@ -71,6 +73,7 @@ class AdCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Ø´Ø§Ø±Ø© Ø§ÙØ®ØµÙ
                 if (product.hasDiscount)
                   Positioned(
                     top: 8,
@@ -95,6 +98,7 @@ class AdCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                // Ø´Ø§Ø±Ø© Ø§ÙÙØ²Ø§Ø¯
                 if (product.isAuction)
                   Positioned(
                     top: 8,
@@ -118,7 +122,7 @@ class AdCard extends StatelessWidget {
                           ),
                           SizedBox(width: 4),
                           Text(
-                            'أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ²أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯',
+                            'ÙØ²Ø§Ø¯',
                             style: TextStyle(
                               fontFamily: 'Changa',
                               color: AppTheme.darkText,
@@ -130,6 +134,7 @@ class AdCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                // Ø²Ø± Ø§ÙÙÙØ¶ÙØ©
                 if (showFavorite)
                   Positioned(
                     bottom: 8,
@@ -152,11 +157,13 @@ class AdCard extends StatelessWidget {
                   ),
               ],
             ),
+            // ÙØ¹ÙÙÙØ§Øª Ø§ÙÙÙØªØ¬
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Ø§ÙØ¹ÙÙØ§Ù
                   Text(
                     product.title,
                     maxLines: 2,
@@ -169,6 +176,7 @@ class AdCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  // Ø§ÙØ³Ø¹Ø±
                   Row(
                     children: [
                       Text(
@@ -195,6 +203,7 @@ class AdCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
+                  // ÙØ¹ÙÙÙØ§Øª Ø¥Ø¶Ø§ÙÙØ©
                   Row(
                     children: [
                       Icon(
@@ -205,7 +214,7 @@ class AdCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          product.city ?? 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ·أ¢آ€آ؛أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ± أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ­أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¯',
+                          product.city ?? 'ØºÙØ± ÙØ­Ø¯Ø¯',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -215,6 +224,7 @@ class AdCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // Ø§ÙØªÙÙÙÙ
                       if (product.rating > 0) ...[
                         const Icon(
                           Icons.star,
@@ -243,6 +253,7 @@ class AdCard extends StatelessWidget {
   }
 }
 
+/// Ø¨Ø·Ø§ÙØ© Ø§ÙÙÙØªØ¬ Ø§ÙØ£ÙÙÙ (ÙÙÙÙØ§Ø¦Ù)
 class AdCardHorizontal extends StatelessWidget {
   final ProductModel product;
   final VoidCallback? onTap;
@@ -276,6 +287,7 @@ class AdCardHorizontal extends StatelessWidget {
         ),
         child: Row(
           children: [
+            // Ø§ÙØµÙØ±Ø©
             ClipRRect(
               borderRadius: const BorderRadius.horizontal(
                 right: Radius.circular(16),
@@ -308,6 +320,7 @@ class AdCardHorizontal extends StatelessWidget {
                 ),
               ),
             ),
+            // Ø§ÙÙØ¹ÙÙÙØ§Øª
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -394,13 +407,13 @@ class AdCardHorizontal extends StatelessWidget {
   String _getStatusText(String status) {
     switch (status) {
       case 'active':
-        return 'أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ´أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ·';
+        return 'ÙØ´Ø·';
       case 'sold':
-        return 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ§أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ¢آ€آچأکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¨أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹';
+        return 'ØªÙ Ø§ÙØ¨ÙØ¹';
       case 'expired':
-        return 'أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¹أ‚آ¾أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أکآŒأکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹';
+        return 'ÙÙØªÙÙ';
       default:
-        return 'أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ·أ¢آ€آ؛أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ± أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أƒآ¢أ¢آ‚آ¬أ‚آ¦أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ¹أکآ·أ‚آ£أکآ¹أ‚آ©أکآ·أ‚آ¢أکآ¢أ‚آ±أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¹أکآ·أ‚آ£أƒآ¢أ¢آ‚آ¬أڑآ‘أکآ·أ‚آ¢أکآ«أ¢آ€آ أکآ·أ‚آ£أƒآ¢أ¢آ€آ‍أ‚آ¢أکآ·أ‚آ¢أکآ¸أ‚آ¾';
+        return 'ØºÙØ± ÙØ¹Ø±ÙÙ';
     }
   }
 }
