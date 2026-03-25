@@ -6,11 +6,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'providers/theme_manager.dart';
 import 'services/cache/local_storage_service.dart';
 import 'theme/app_theme.dart';
-import 'screens/splash_screen.dart';
+
+// استيراد الشاشات
+import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/main_navigation.dart';
-import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/notifications_screen.dart';
 import 'screens/all_ads_screen.dart';
@@ -67,19 +68,25 @@ import 'screens/wallet/recharge_credit_screen.dart';
 import 'screens/wallet/pay_bundles_screen.dart';
 import 'screens/wallet/internet_landline_screen.dart';
 import 'screens/wallet/receive_transfer_request_screen.dart';
+import 'screens/splash_screen.dart'; // إضافة شاشة السبلاش
 
 void main() async {
+  // إصلاح الشاشة السوداء - التأكد من تهيئة Flutter
   WidgetsFlutterBinding.ensureInitialized();
 
+  // تهيئة التخزين المحلي
   await LocalStorageService.init();
 
+  // تحميل متغيرات البيئة
   await dotenv.load(fileName: ".env");
 
+  // تهيئة Supabase
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
+  // إعدادات النظام
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -119,7 +126,7 @@ class MyApp extends StatelessWidget {
             },
             initialRoute: '/',
             routes: {
-              '/': (context) => const SplashScreen(),
+              '/': (context) => const SplashScreen(), // تغيير إلى شاشة السبلاش
               '/login': (context) => const LoginScreen(),
               '/register': (context) => const RegisterScreen(),
               '/main': (context) => const MainNavigation(),
@@ -158,6 +165,7 @@ class MyApp extends StatelessWidget {
               '/about': (context) => const AboutScreen(),
               '/privacy_policy': (context) => const PrivacyPolicyScreen(),
               '/help_support': (context) => const HelpSupportScreen(),
+              // صفحات المحفظة
               '/deposit': (context) => const DepositScreen(),
               '/withdraw': (context) => const WithdrawScreen(),
               '/transfer': (context) => const TransferScreen(),
